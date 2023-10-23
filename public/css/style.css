@@ -1,4 +1,24 @@
 body {
     font-family: 'Montserrat', sans-serif;
-    
+    padding: 0;
+    margin: 0;
+}
+.container {
+    width: min(80%, 110rem);
+    margin-inline: auto;
+}
+.navbar {
+    padding: 1rem 0;
+    background: rgb(39, 106, 194);;
+}
+.title {
+    color: white;
+}
+.btn {
+    background: rgb(39, 106, 194);
+    padding: .5rem 1rem;
+    border-radius: 5px;
+    margin-right: 0.5rem;
+    text-decoration: none;
+    color: white;
 }
