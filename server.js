@@ -36,14 +36,19 @@ app.post("/", verifyToken, (req, res) => {
 app.get("/signup", (req, res) => {
   res.render("signup.html");
 });
+//POST request
 app.post("/signup", (req, res) => {
   // const { username, email, password } = req.body;
   // console.log(username, email, password);
   // res.send("new sign up user");
 });
-//FORMAT TOKEN
-//Authorization: valueHead <access_token>
-
+//PUT Request
+app.put("/signup", (req, res) => {
+  console.log(req.body);
+  res.json({
+    message: "put update successful",
+  });
+});
 //verify token
 function verifyToken(req, res, next) {
   //Get auth header value
