@@ -1,14 +1,13 @@
 const express = require("express");
-// const ejs = require("ejs");
 const app = express();
+const bcrypt = require("bcrypt"); //importing bcrypt packages
 
-//json web token
-const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken"); //JSON Web Token
 //middle ware
 app.use(express.static("public"));
 app.use(express.json());
 app.set("view engine", "ejs");
-
+//App listening on port 3000
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
 });
@@ -32,17 +31,32 @@ app.post("/", verifyToken, (req, res) => {
   });
   console.log("Post Created");
 });
-//signup
+//signup routes
 app.get("/signup", (req, res) => {
-  res.render("signup.html");
+  res.render("signup");
 });
-//POST request
-app.post("/signup", (req, res) => {
+//POST routes
+const users = []; //Storing users
+app.post("/signup", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password);
+    users.push({
+      id: Date.now().toString(),
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+    console.log(users); //display users in the terminal
+    res.redirect("/login.html");
+  } catch (e) {
+    console.log(e);
+    res.redirect("/");
+  }
   // const { username, email, password } = req.body;
   // console.log(username, email, password);
   // res.send("new sign up user");
 });
-//PUT Request
+//PUT routes
 app.put("/signup", (req, res) => {
   console.log(req.body);
   res.json({
@@ -69,24 +83,20 @@ function verifyToken(req, res, next) {
 }
 //log in route
 app.get("/login", (req, res) => {
-  res.render("user_profile.html");
+  res.render("login.html");
 });
 app.post("/login", (req, res) => {
-  const user = {
-    id: 1,
-    username: "webmaster00",
-    email: "webmaster@test.com",
-    password: "testing",
-  };
+  // const user = {
+  //   id: 1,
+  //   username: "webmaster00",
+  //   email: "webmaster@test.com",
+  //   password: "testing",
+  // };
 
-  jwt.sign({ user }, "secretkey", (err, token) => {
+  jwt.sign({ users }, "secretkey", (err, token) => {
     res.json({
       token,
     });
     console.log(token);
   });
-
-  // const { username, password } = req.body;
-  // console.log(username, password);
-  // res.send("user login");
 });
