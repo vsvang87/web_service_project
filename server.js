@@ -1,12 +1,12 @@
 const express = require("express");
 const app = express();
-const bcrypt = require("bcrypt"); //importing bcrypt packages
+const bcrypt = require("bcrypt");
 
 const jwt = require("jsonwebtoken"); //JSON Web Token
 //middle ware
 app.use(express.static("public"));
 app.use(express.json());
-app.set("view engine", "ejs");
+// app.set("view engine", "ejs");
 //App listening on port 3000
 app.listen(3000, () => {
   console.log("Server listening on port 3000");
@@ -33,34 +33,33 @@ app.post("/", verifyToken, (req, res) => {
 });
 //signup routes
 app.get("/signup", (req, res) => {
-  res.render("signup");
+  res.json(users);
 });
 //POST routes
-const users = []; //Storing users
+const users = []; //Storing users //This will go inside of database
 app.post("/signup", async (req, res) => {
   try {
-    const hashedPassword = await bcrypt.hash(req.body.password);
-    users.push({
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    const user = {
       id: Date.now().toString(),
-      name: req.body.name,
+      username: req.body.username,
       email: req.body.email,
       password: hashedPassword,
-    });
-    console.log(users); //display users in the terminal
+    };
+    users.push(user);
+    console.log(users);
     res.redirect("/login.html");
   } catch (e) {
     console.log(e);
-    res.redirect("/");
+    res.status(500).send();
   }
-  // const { username, email, password } = req.body;
-  // console.log(username, email, password);
-  // res.send("new sign up user");
 });
 //PUT routes
 app.put("/signup", (req, res) => {
   console.log(req.body);
   res.json({
-    message: "put update successful",
+    message: "update successful",
   });
 });
 //verify token
@@ -81,22 +80,44 @@ function verifyToken(req, res, next) {
     res.sendStatus(403);
   }
 }
+
 //log in route
 app.get("/login", (req, res) => {
   res.render("login.html");
 });
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res, next) => {
   // const user = {
   //   id: 1,
   //   username: "webmaster00",
   //   email: "webmaster@test.com",
   //   password: "testing",
   // };
-
-  jwt.sign({ users }, "secretkey", (err, token) => {
-    res.json({
-      token,
+  //Check if there is a user
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username or Password not found" });
+  } else {
+    jwt.sign({ users }, "secretkey", (err, token) => {
+      res.json({
+        token,
+      });
+      console.log(token);
     });
-    console.log(token);
-  });
+    return res.redirect("/load.html");
+  }
+});
+
+//Log Out Route
+app.delete("/logout", (req, res) => {
+  if (req.session) {
+    req.session.destroy((err) => {
+      if (err) {
+        res.status(400).send("Unable to log out");
+      } else {
+        res.send("Logout successful");
+      }
+    });
+  } else {
+    res.end();
+  }
 });
