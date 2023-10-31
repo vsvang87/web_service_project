@@ -28,6 +28,7 @@ module.exports.signup_post = async (req, res) => {
   try {
     const user = await User.create({ email, password });
     res.status(201).json(user);
+    res.redirect("login");
   } catch (err) {
     const errors = handleErrors(err);
     res.status(400).json({ errors });
@@ -39,4 +40,15 @@ module.exports.login_get = (req, res) => {
 module.exports.login_post = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
+  //checking for authentication
+  try {
+    if (email === "email" || password === "password") {
+      res.render("load");
+    }
+  } catch (err) {
+    res.status(400).json("incorrect email or password!");
+  }
+};
+module.exports.load_get = async (req, res) => {
+  res.render("load");
 };

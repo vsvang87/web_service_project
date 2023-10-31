@@ -15,7 +15,10 @@ app.use(express.static("public"));
 app.use(express.json());
 
 //connect to Database
-mongoose.connect("mongodb://localhost:27017");
+mongoose.connect("mongodb://localhost:27017/my_database", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 //App listening on port 3000
 app.listen(3000, () => {

@@ -15,6 +15,10 @@ const userSchema = new Schema({
     required: [true, "please enter a password"],
     minlength: [6, "needs minimum length of 6 characters"],
   },
+  loads: {
+    title: String,
+    body: String,
+  },
 });
 
 //trigger a function after doc is saved to database
