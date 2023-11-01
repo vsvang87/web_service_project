@@ -5,8 +5,7 @@ const authRoutes = require("./routes/authRoutes");
 const cookieParser = require("cookie-parser");
 
 const app = new express();
-const uri =
-  "mongodb+srv://vsvang:visayvang123456@cluster0.j6lub2l.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb://localhost:27017/my_database";
 
 app.set("view engine", "ejs");
 
@@ -21,16 +20,12 @@ app.use(cookieParser());
 async function connect() {
   try {
     await mongoose.connect(uri);
-    console.log("Successfully connected");
+    console.log("Successfully connected to database");
   } catch (error) {
     console.error(error);
   }
 }
 connect();
-// mongoose.connect("mongodb://localhost:27017/my_database", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
 
 //App listening on port 3000
 app.listen(3000, () => {
@@ -58,94 +53,3 @@ app.get("/read-cookies", (req, res) => {
 
   res.json(cookies);
 });
-// //home page
-// app.get("/", (req, res) => {
-//   res.render("index");
-// });
-// app.post("/", verifyToken, (req, res) => {
-//   jwt.verify(req.token, "secretkey", (err, auth) => {
-//     if (err) {
-//       res.sendStatus(403);
-//     } else {
-//       res.json({
-//         message: "Posted Created",
-//         auth,
-//       });
-//     }
-//   });
-//   res.json({
-//     message: "Posted created",
-//   });
-//   console.log("Post Created");
-// });
-// //signup routes
-// app.get("/signup", (req, res) => {
-//   res.json(users);
-// });
-// //POST routes
-// const users = []; //Storing users //This will go inside of database
-// app.post("/signup", async (req, res) => {
-//   try {
-//     const salt = await bcrypt.genSalt();
-//     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-//     const user = {
-//       id: Date.now().toString(),
-//       username: req.body.username,
-//       email: req.body.email,
-//       password: hashedPassword,
-//     };
-//     users.push(user);
-//     console.log(users);
-//     res.redirect("/login.html");
-//   } catch (e) {
-//     console.log(e);
-//     res.status(500).send();
-//   }
-// });
-// //PUT routes
-// app.put("/signup", (req, res) => {
-//   console.log(req.body);
-//   res.json({
-//     message: "update successful",
-//   });
-// });
-// //verify token
-// function verifyToken(req, res, next) {
-//   //Get auth header value
-//   const valueHeader = req.headers["authorization"];
-//   //check if valueHeader is undefined
-//   if (typeof valueHeader !== "undefined") {
-//     const bearer = valueHeader.split(" ");
-//     //Get token from array
-//     const bearerToken = bearer[1];
-//     //Set token
-//     req.token = bearerToken;
-//     //Next
-//     next();
-//   } else {
-//     res.sendStatus(403);
-//   }
-// }
-
-// //log in route
-// app.get("/login", (req, res) => {
-//   res.render("login.html");
-//   // url parameters
-//   // decoding the tokens
-//   //grab the username and password and look up in the database
-// });
-// app.post("/login", async (req, res, next) => {
-//   //Check if there is a user
-//   const { username, password } = req.body;
-//   if (!username || !password) {
-//     return res.status(400).json({ message: "Username or Password not found" });
-//   } else {
-//     jwt.sign({}, "secretkey", (err, token) => {
-//       res.json({
-//         token,
-//       });
-//       console.log(token);
-//     });
-//     return res.redirect("/load.html");
-//   }
-// });

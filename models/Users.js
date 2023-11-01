@@ -25,13 +25,13 @@ const userSchema = new Schema({
 //mongoose hook, trigger a function after doc saved to database
 userSchema.post("save", function (doc, next) {
   console.log("new user was created & saved!", doc);
-  next();
+  // next();
 });
 //hashed password before saving user to database
 userSchema.pre("save", async function (next) {
   const salt = await bcrypt.genSalt();
   this.password = await bcrypt.hash(this.password, salt);
-  next();
+  // next();
 });
 
 const User = mongoose.model("user", userSchema);
