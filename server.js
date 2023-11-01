@@ -1,11 +1,13 @@
 const express = require("express");
-const path = require("path");
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const path = require("path");
 const authRoutes = require("./routes/authRoutes");
+const cookieParser = require("cookie-parser");
 
 const app = new express();
-// const ejs = require("ejs");
+const uri =
+  "mongodb+srv://vsvang:visayvang123456@cluster0.j6lub2l.mongodb.net/?retryWrites=true&w=majority";
+
 app.set("view engine", "ejs");
 
 //JSON Web Token
@@ -13,12 +15,22 @@ const jwt = require("jsonwebtoken");
 //middle ware
 app.use(express.static("public"));
 app.use(express.json());
+app.use(cookieParser());
 
 //connect to Database
-mongoose.connect("mongodb://localhost:27017/my_database", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+async function connect() {
+  try {
+    await mongoose.connect(uri);
+    console.log("Successfully connected");
+  } catch (error) {
+    console.error(error);
+  }
+}
+connect();
+// mongoose.connect("mongodb://localhost:27017/my_database", {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+// });
 
 //App listening on port 3000
 app.listen(3000, () => {
@@ -30,6 +42,22 @@ app.get("/", (req, res) => {
 });
 app.use(authRoutes);
 
+//cookies
+app.get("/set-cookies", (req, res) => {
+  res.cookie("newUser", false);
+  res.cookie("newEmployee", true, {
+    maxAge: 1000 * 60 * 60 * 24,
+    httpOnly: true,
+  });
+  res.send("Cookies successful!");
+});
+//read cookies
+app.get("/read-cookies", (req, res) => {
+  const cookies = req.cookies;
+  console.log(cookies.newUser);
+
+  res.json(cookies);
+});
 // //home page
 // app.get("/", (req, res) => {
 //   res.render("index");

@@ -2,24 +2,26 @@ body {
     font-family: 'Montserrat', sans-serif;
     padding: 0;
     margin: 0;
-   
+    
 }
 .container {
     width: min(80%, 110rem);
     margin-inline: auto;
 }
-.navbar {
+nav {
     padding: 1rem 0;
-    background: rgb(39, 106, 194);;
+    background: rgb(60, 102, 182);
 }
 .title {
     color: white;
 }
+.btn-div {
+    margin-top: 3rem;
+}
 .btn {
-    background: rgb(39, 106, 194);
-    padding: .5rem 1rem;
+    padding: .5rem;
     border-radius: 5px;
-    margin-right: 0.5rem;
+    background: rgb(60, 102, 182);
     text-decoration: none;
-    color: white;
+   color: #fff;
 }
